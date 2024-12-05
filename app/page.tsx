@@ -1,4 +1,9 @@
+'use client'
 import { ModeToggle } from '@/components/mode-toggle'
+import ReportComponent from '@/components/ReportComponent'
+import { Button } from '@/components/ui/button'
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
+import { Settings } from 'lucide-react'
 import React from 'react'
 
 const HomeComponent = () => {
@@ -11,6 +16,17 @@ const HomeComponent = () => {
           </h1>
           <div className="w-full flex flex-row justify-end gap-2">
             <ModeToggle />
+            <Drawer>
+              <DrawerTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Settings />
+                  <span className="sr-only">Settings</span>
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent className="max-h-[80vh]">
+                <ReportComponent/>
+              </DrawerContent>
+            </Drawer>
           </div>
         </header>
       </div>
