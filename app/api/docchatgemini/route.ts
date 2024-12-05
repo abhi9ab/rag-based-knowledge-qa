@@ -1,10 +1,18 @@
 import { Pinecone } from "@pinecone-database/pinecone";
 import { queryPineconeVectorStore } from "@/utils";
-import { Message } from "ai/react";
+import { Message, streamText } from "ai";
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 const pinecone = new Pinecone({
     apiKey: process.env.PINECONE_API_KEY ?? "",
 });
+
+const google = createGoogleGenerativeAI({
+    baseURL: 'https://generativelanguage.googleapis.com/v1beta',
+    apiKey: process.env.GEMINI_API_KEY
+});
+
+const model = google('models/gemini-1.5-pro-latest');
 
 export async function POST(req: Request, res: Response) {
     const reqBody = await req.json();
@@ -13,8 +21,8 @@ export async function POST(req: Request, res: Response) {
     const messages: Message[] = reqBody.messages;
     const userQuestion = `${messages[messages.length - 1].content}`;
 
-    const reportData: string = reqBody.data.reportData;
-    const query = `Represent this for searching relevant passages: user document says: \n${reportData}. \n\n${userQuestion}`;
+    const documentData: string = reqBody.data.reportData;
+    const query = `Represent this for searching relevant passages: user document says: \n${documentData}. \n\n${userQuestion}`;
 
     const retrievals = await queryPineconeVectorStore(pinecone, 'rag-pdf-chat', "testspace", query);
 
@@ -38,5 +46,10 @@ export async function POST(req: Request, res: Response) {
     \n\n**Answer:**
     `;
 
-    return new Response("dummy response", { status: 200 });
+    const result = await streamText({
+        model: model,
+        prompt: finalPrompt,
+    });
+
+    return result.toDataStreamResponse();
 }
