@@ -157,7 +157,7 @@ const ReportComponent = ({ onReportConfirmation }: Props) => {
           onChange={(e) => {
             setReportData(e.target.value);
           }}
-          placeholder="Extracted data from the report will appear here. Get better recommendations by providing additional patient history and symptoms..."
+          placeholder="Extracted data from the document will appear here. Get better recommendations by providing additional data..."
           className="min-h-72 resize-none border-0 p-3 shadow-none focus-visible:ring-0" />
         <Button
           variant="destructive"
