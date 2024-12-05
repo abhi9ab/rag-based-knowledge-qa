@@ -4,7 +4,7 @@ import { Message, streamText } from "ai";
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 const pinecone = new Pinecone({
-    apiKey: process.env.PINECONE_API_KEY ?? "",
+    apiKey: process.env.PINECONE_API_KEY!,
 });
 
 const google = createGoogleGenerativeAI({
