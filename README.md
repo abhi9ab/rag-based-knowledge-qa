@@ -87,3 +87,5 @@ Uses `mixedbread-ai/mxbai-embed-large-v1` for high-quality semantic embeddings
 5. Create a Pull Request
 
 ## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
