@@ -8,7 +8,7 @@ const prompt = `Attached is an image or PDF of a legal document.
 Go over the legal document and identify key legal provisions, critical clauses, and potential implications. Then summarize in 100 words. You may increase the word limit if the document has multiple pages. Do not output specific names of parties involved. Make sure to include numerical values and key details from the document, including document title.
 ## Summary: `;
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
     const { base64 } = await req.json();
     const filePart = fileToGenerativePart(base64)
 
