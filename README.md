@@ -29,7 +29,9 @@ This application provides an intelligent, context-aware chatbot for legal docume
 
 ## Environment Setup
 
-Create a `.env.local` file with the following variables:
+1. Copy `.env.example` to `.env`
+2. Fill in the values with your actual credentials
+3. Do not commit your `.env` file
 
 ```bash
 PINECONE_API_KEY=your_pinecone_api_key
