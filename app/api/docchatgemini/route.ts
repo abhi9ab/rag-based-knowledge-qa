@@ -18,5 +18,25 @@ export async function POST(req: Request, res: Response) {
 
     const retrievals = await queryPineconeVectorStore(pinecone, 'rag-pdf-chat', "testspace", query);
 
-    return new Response("dummy response", {status: 200});
+    const finalPrompt = `Here is a summary of a legal document, and a user query. Some generic legal insights are also provided that may or may not be relevant for the document.
+    Go through the legal document and answer the user query.
+    Ensure the response is legally precise, and demonstrates a thorough understanding of the query topic and the document's contents.
+    Before answering you may enrich your knowledge by going through the provided legal insights. 
+    The legal insights are generic information and not part of the specific legal document. Do not include any legal insight if it is not relevant for the specific case.
+    
+    \n\n**Legal Document Summary:** \n${documentData}. 
+    \n**end of legal document** 
+    
+    \n\n**User Query:**\n${userQuestion}?
+    \n**end of user query** 
+    
+    \n\n**Generic Legal Insights:**
+    \n\n${retrievals}. 
+    \n\n**end of generic legal insights** 
+    
+    \n\nProvide thorough legal reasoning and justification for your answer.
+    \n\n**Answer:**
+    `;
+
+    return new Response("dummy response", { status: 200 });
 }
