@@ -12,7 +12,7 @@ const google = createGoogleGenerativeAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
-const model = google('models/gemini-1.5-pro-latest');
+const model = google('models/gemini-1.5-flash-8b');
 
 export async function POST(req: Request) {
     const reqBody = await req.json();
