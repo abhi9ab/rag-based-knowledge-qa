@@ -99,25 +99,19 @@ const ReportComponent = ({ onReportConfirmation }: Props) => {
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        // Create a canvas element
+
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Set  canvas dimensions to match the image
         canvas.width = img.width;
         canvas.height = img.height;
 
-        // Draw the image onto the canvas
         ctx!.drawImage(img, 0, 0);
 
-
-        // Apply basic compression (adjust quality as needed)
         const quality = 0.1; // Adjust quality as needed
 
-        // Convert canvas to data URL
         const dataURL = canvas.toDataURL('image/jpeg', quality);
 
-        // Convert data URL back to Blob
         const byteString = atob(dataURL.split(',')[1]);
         const ab = new ArrayBuffer(byteString.length);
         const ia = new Uint8Array(ab);
@@ -133,6 +127,52 @@ const ReportComponent = ({ onReportConfirmation }: Props) => {
     };
 
     reader.readAsDataURL(file);
+  }
+
+  async function handleLooksGood() {
+    try {
+      setIsLoading(true);
+
+      const uploadResponse = await fetch("/api/docchatgemini", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          documents: [
+            {
+              id: `doc_${Date.now()}`,
+              text: reportData,
+              metadata: {
+                source: "user_upload",
+                uploadDate: new Date().toISOString(),
+                documentType: "report",
+
+                originalFileName: base64Data ? base64Data.substring(0, 50) : "unknown"
+              }
+            }
+          ]
+        }),
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload document to vector database");
+      }
+
+      onReportConfirmation(reportData);
+
+      toast({
+        description: "Document processed and ready for querying!"
+      });
+    } catch (error) {
+      console.error("Error processing document:", error);
+      toast({
+        variant: 'destructive',
+        description: "Failed to process document. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -162,9 +202,8 @@ const ReportComponent = ({ onReportConfirmation }: Props) => {
         <Button
           variant="destructive"
           className="bg-[#D90013]"
-          onClick={() => {
-            onReportConfirmation(reportData);
-          }}
+          onClick={handleLooksGood}
+          disabled={isLoading || !reportData}
         >
           Looks Good
         </Button>
